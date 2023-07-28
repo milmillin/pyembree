@@ -1,4 +1,4 @@
-name: Build and Upload to PyPI
+name: Build Wheel
 
 on: [push, pull_request, workflow_dispatch]
 
@@ -88,27 +88,3 @@ jobs:
         with:
           name: wheels
           path: ./wheelhouse/*
-
-      - name: Upload To PyPI (Windows)
-        if: |
-          matrix.os == 'windows-latest' &&
-          github.event_name == 'push' &&
-          startsWith(github.ref, 'refs/tags')
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          python -m pip install twine
-          twine upload ./wheelhouse/*
-
-      - name: Upload To PyPI (Linux/MacOS)
-        if: |
-          ( matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' ) &&
-          github.event_name == 'push' &&
-          startsWith(github.ref, 'refs/tags')
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          python3 -m pip install twine
-          twine upload ./wheelhouse/*
